@@ -1,0 +1,111 @@
+import json
+from datetime import datetime
+import numpy as np
+from collections import defaultdict
+
+with open("/Users/mikeroncevich/Desktop/project.json") as file:
+    data = json.load(file)
+
+#we are not going to find different data types in the json file and parse the data we need 
+
+print(data[2]['viewsCount'])
+
+#Here we will be summing the viewcounts per day in a new list, then we will sort this in ascending order for the traffic rates per day
+
+# Step 2: Extract Dates and View Counts
+daily_views = defaultdict(int)
+for post in data:
+    date_str = post['createdAt'].split('T')[0]  # Extract just the date part
+    date = datetime.strptime(date_str, '%Y-%m-%d')  # Convert string to datetime object
+    views = post['viewsCount']
+    daily_views[date] += views
+
+# Step 3: Sort the Results
+sorted_daily_views = sorted(daily_views.items())
+
+# Step 4: Analyze the Data
+for date, views in sorted_daily_views:
+    print(f'{date}: {views} views')
+
+#here is the sorted list of traffic times
+sorted_daily_views = sorted(daily_views.items(), key=lambda x: x[1])
+#print(sorted_daily_views)
+
+
+#now we are going to do the recent response times for the posts 
+# Initialize a list to store the response times and post IDs.
+response_times = []
+
+# Loop through each post in your data.
+for post in data:
+    # Convert post creation time to datetime object
+    post_created_at = datetime.strptime(post["createdAt"], '%Y-%m-%dT%H:%M:%S.%fZ')
+    
+    # Initialize the first response time to None
+    first_response_time = None
+    
+    # Check if there are comments (responses) for the post
+    if "comments" in post and post["comments"]:
+        # Sort comments by creation time
+        sorted_comments = sorted(post["comments"], key=lambda x: x["createdAt"])
+        
+        # Convert the first comment's creation time to datetime object
+        first_response_time = datetime.strptime(sorted_comments[0]["createdAt"], '%Y-%m-%dT%H:%M:%S.%fZ')
+    
+    # Calculate the response time if there is a response
+    if first_response_time:
+        response_time = first_response_time - post_created_at
+        response_times.append((post["id"], response_time))
+    else:
+        response_times.append((post["id"], None))
+
+# Sort the list based on response times in ascending order.
+# Posts without responses (None) will be placed at the end of the list.
+response_times.sort(key=lambda x: (x[1] is None, x[1]))
+
+# Print the sorted list
+for post_id, response_time in response_times:
+    print(f"Post ID: {post_id}, Response Time: {response_time}")
+
+
+#now we will figure out the number of unanswered posts overall and per day
+
+# Initialize a defaultdict to store the count of unanswered posts per day.
+unanswered_posts = defaultdict(int)
+
+# Initialize a counter for the total number of unanswered posts
+total_unanswered_posts = 0
+
+# Loop through each post in your data.
+for post in data:
+    # Convert post creation time to datetime object
+    post_created_at = datetime.strptime(post["createdAt"], '%Y-%m-%dT%H:%M:%S.%fZ')
+    
+    # Extract the date part
+    post_date = post_created_at.date()
+    
+    # Initialize a flag to check if the post is unanswered
+    is_unanswered = True
+    
+    # Check if there are comments (responses) for the post
+    if "comments" in post and post["comments"]:
+        # Check each comment to see if it is marked as an answer
+        for comment in post["comments"]:
+            if "answer" in comment and comment["answer"] is True:
+                is_unanswered = False
+                break
+    
+    # If the post is still marked as unanswered, increment the count for the day and the total counter
+    if is_unanswered:
+        unanswered_posts[post_date] += 1
+        total_unanswered_posts += 1
+
+# Convert the defaultdict to a regular dictionary and sort by date
+unanswered_posts_sorted = dict(sorted(unanswered_posts.items()))
+
+# Print the sorted dictionary
+for date, count in unanswered_posts_sorted.items():
+    print(f"Date: {date}, Unanswered Posts: {count}")
+
+# Print the total number of unanswered posts
+print(f"Total Unanswered Posts: {total_unanswered_posts}")
