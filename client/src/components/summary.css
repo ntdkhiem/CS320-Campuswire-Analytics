@@ -1,0 +1,38 @@
+
+.container {
+    display: flex; /* Use flexbox to align elements next to each other */
+    align-items: center; /* Vertically align items in the middle */
+    gap: 32px; /* Add some spacing between the two elements */
+  }
+
+  .left-content {
+    flex: 1; /* Allow the left content to expand and take available space */
+  }
+  
+  .right-content {
+    flex: 1; /* Allow the right content to expand and take available space */
+  }
+.title {
+    font-family: Inter;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 48px;
+    letter-spacing: 0em;
+    text-align: left;
+    margin-left: 32px;
+    margin-top: 24px;
+}
+
+
+.instructors {
+    color: #000;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    white-space: pre-wrap;
+    margin-left: 280px; /* Adjust as needed */
+    margin-top: 24px;
+    text-align: left;
+  }
