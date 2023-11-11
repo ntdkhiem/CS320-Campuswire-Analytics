@@ -5,13 +5,10 @@
     gap: 32px; /* Add some spacing between the two elements */
   }
 
-  .left-content {
+.content {
     flex: 1; /* Allow the left content to expand and take available space */
   }
-  
-  .right-content {
-    flex: 1; /* Allow the right content to expand and take available space */
-  }
+
 .title {
     font-family: Inter;
     font-size: 40px;
@@ -25,7 +22,6 @@
 
 
 .instructors {
-    color: #000;
     font-family: Inter;
     font-size: 16px;
     font-style: normal;
@@ -33,6 +29,26 @@
     line-height: normal;
     white-space: pre-wrap;
     margin-left: 280px; /* Adjust as needed */
+    margin-top: 24px;
+    text-align: left;
+  }
+ .warning{
+    color:red;
+    font-family: Inter;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    margin-left: 32px;
+    margin-top: 24px;
+    text-align: left;
+  }
+
+  .class-summary{
+    font-family: Inter;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    margin-left: 280px;
     margin-top: 24px;
     text-align: left;
   }
