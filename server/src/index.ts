@@ -14,12 +14,15 @@ app.get('/', async(req, res) => {
 })
 
 app.get('/numUnreadPosts', async(req, res) => { //gets ttl num of unread posts
-  res.send('traffiic data')
+  let collection = await db.collection("numUnreadPosts");
+  let data = {numUnreadPosts: collection.num}
+  res.send(JSON.stringify(data));
 })
 
 app.get('/numUnreadPosts/:date', async(req, res) => { //gets ttl num of unread posts for the day
-  res.send('rrt')
-  const date = req.params.date;
+  let collection = await db.collection("numUnreadPostsDate");
+  let result = await collection.findOne{data: req.params.date}
+  res.send(JSON.stringify(data));
 })
 
 app.get('/numUnansweredQuestions', async(req, res) => { //gets ttl num of unanswered questions
