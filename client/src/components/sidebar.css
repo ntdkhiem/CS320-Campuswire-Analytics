@@ -1,0 +1,135 @@
+.brand-logo {
+    background: url(../images/logo.svg) no-repeat scroll 50%;
+    background-size: 32px auto;
+    cursor: pointer;
+    flex-shrink: 0;
+    height: 32px;
+    margin: 20px 0 14px 10px;
+    text-indent: -9999px;
+    width: 32px;
+}
+
+.nav {
+    width: 100%;
+    padding: 0 0 8px 10px;
+}
+
+.sidenav {
+    width: fit-content;
+    padding: 4px 10px 7px 10px;
+    margin-bottom: 10px;
+    color: #4f4f4f;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Segoe UI';
+}
+
+.sidenav:hover {
+    background-color: #f0f1f2;
+    color: #4f4f4f;
+}
+
+.bi {
+    margin-right: 10px;
+    font-size: 17px;
+}
+
+.nav-pills .sidenav.active {
+    background-color: rgba(0, 132, 255, 0.1);
+    color: #0084ff;
+}
+
+.flex-row {
+    width: 100%;
+    padding: 25px 0 8px 10px;
+    border-top: 1px solid #dadddf;
+}
+
+.rounded-circle {
+    height: 32px;
+    width: 32px;
+    margin: 0 8px 10px 0;
+}
+
+.rounded-circle.active {
+    border: 2px solid #0084ff;
+}
+
+.btn-circle {
+    width: 32px;
+    height: 32px;
+    padding: 0 0 0 8px;
+    margin: 0 8px 10px 0;
+    border-radius: 50%;
+    border: 1px solid #e0e0e0;
+    background-color: #fafbfc;
+    color: #4f4f4f;
+    text-align: center;
+    font-size: 12px;
+}
+
+.bi-arrow-bar-left {
+    width: 27px;
+    height: 27px;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+    background-color: #fafbfc;
+}
+
+.collapse-btn {
+    position: fixed;
+    bottom: 70px;
+    width: 170px;
+    background-color: #fff;
+    border: 0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.user-settings {
+    width: 170px;
+    height: auto;
+    padding: 13px 0 13px 5px;
+    position: fixed;
+    bottom: 0;
+    border-top: 1px solid #dadddf;
+    background-color: #fff;
+}
+
+.user-settings img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.user-name {
+    margin: 0 7px 0 7px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.user-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 4px;
+    margin-right: 4px;
+    float: right;
+    color: #707172;
+    background-color: transparent;
+}
+
+.user-btn:hover {
+    color: #000;
+    background-color: #e0e0e0;
+}
+
+.user-btn i {
+    font-size: 12px;
+    -webkit-text-stroke: 0.3px;
+    margin: 0;
+}
+

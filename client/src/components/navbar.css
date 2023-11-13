@@ -1,0 +1,28 @@
+.navbar-collapse {
+  border-bottom: 1px solid #dadddf;
+}
+
+.nav-item {
+  margin-right: 1rem;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'Segoe UI';
+}
+
+.active-line {
+  margin: 0 auto;
+  background-color: #007bff;
+  height: 1.5px;
+  width: 40%;
+  left: 30%;
+  bottom: 0;
+  animation-name: stretch;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes stretch {
+  100% {
+    transform: scale(2.2, 1);
+  }
+}
