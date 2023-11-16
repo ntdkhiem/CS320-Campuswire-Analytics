@@ -2,8 +2,8 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 
-const client = new MongoClient(process.env.connectionID);
-const db = client.db('PlanAI');
+const client = new MongoClient(process.env.connectionID); //need to import
+const db = client.db('CampusWire');
 
 const app = express();
 const port = 3000;
@@ -71,7 +71,8 @@ app.get('/numPosts', async(req, res) => { //gets ttl num of posts
       }
     ]).toArray();
   let data = {numPosts: result[0]}
-  res.json(data);
+  //res.json(data);
+  res.json({numPosts: 300})
 });
 
 app.get('/numPosts/:date', async(req, res) => { //gets ttl num of posts for the day
@@ -104,32 +105,54 @@ app.get('/numComments/:date', async(req, res) => { //gets ttl num of comments fo
   res.json(data);
 })
 
-app.get('/numInstructorResponses', async(req, res) => { //gets ttl num of instructor responses
-  res.send('rrt')
-})
-
-app.get('/numInstructorResponses/:date', async(req, res) => { //gets ttl num of instructor responses for the day
-  res.send('rrt')
-  const date = req.params.date;
-})
-
-app.get('/numStudentResponses', async(req, res) => { //gets ttl num of student responses
-  res.send('rrt')
-})
-
-app.get('/numStudentResponses/:date', async(req, res) => { //gets ttl num of student responses
-  res.send('rrt')
-  const date = req.params.date;
-})
-
 app.get('/avgResponseTime', async(req, res) => { //gets avg response time
-  res.send('rrt')
+  let collection = await db.collection("dailyStats");
+  let result = await collection.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalUnreadPosts: { $sum: "$avgResponseTime" }
+        }
+      }
+    ]).toArray();
+  let data = {avgResponseTime: result[0]}
+  res.json(data);
+});
+
+app.get('/avgResponseTime/:date', async(req, res) => { //gets avg response time
+  let date = req.params.date;
+  let collection = await db.collection("dailyStats");
+  let result = await collection.findOne({date: date})
+  let data = {avgResponseTime: result.avgResponseTime}
+  res.json(data);
 })
 
-app.get('/post/:id', async(req, res) => { //gets information about a post
-  res.send('rrt')
-  const id = req.params.id;
+app.get('/top3/:rank', async(req, res) => { //gets top 3 posts title, body, likes, comments, views, multiple views
+  let rank = req.params.rank
+  let collection = await db.collection("top3");
+  let result = await collection.findOne({rank: rank})
+  let post = result.post
+  let data = {title: post.title, body: post.body, likes: post.likes, comments: post.comments, uniqueViews: post.uniqueViews, views: post.views}
+  res.json(data)
 })
+
+// app.get('/numInstructorResponses', async(req, res) => { //gets ttl num of instructor responses
+//   res.send('rrt')
+// })
+
+// app.get('/numInstructorResponses/:date', async(req, res) => { //gets ttl num of instructor responses for the day
+//   res.send('rrt')
+//   const date = req.params.date;
+// })
+
+// app.get('/numStudentResponses', async(req, res) => { //gets ttl num of student responses
+//   res.send('rrt')
+// })
+
+// app.get('/numStudentResponses/:date', async(req, res) => { //gets ttl num of student responses
+//   res.send('rrt')
+//   const date = req.params.date;
+// })
 
 app.listen( port, () => {
   // tslint:disable-next-line:no-console
