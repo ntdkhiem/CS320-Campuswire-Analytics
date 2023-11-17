@@ -4,7 +4,12 @@ import './summary.css'
 const Summary = () => {
 
     const warnings = ['420 Unread posts', '96 Unanswered questions', '40 Unanswered followups'];
-    const class_sum = ['191 total posts','575 total contributions','153 instructors\' responses','23 students\' responses','9 min avg. response time'];
+    const boxStyle = {
+        backgroundColor: 'lightblue',
+        height: '100px', // Adjust the height as needed
+        margin: '70px 140px', // Adjust the margins as needed
+        borderRadius: '10px', // Adjust the radius as needed
+      };
     return(
         <div>
             <div  className={`container`}>
@@ -39,6 +44,13 @@ const Summary = () => {
                     </p>
                 </div>
 
+            </div>
+
+            <div style={boxStyle}>
+                <div className={'flex-container'}>content</div>
+            </div>
+            <div style={boxStyle}>
+                <div className={'flex-container'}>content</div>
             </div>
         </div>
     );

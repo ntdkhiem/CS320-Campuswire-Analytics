@@ -7,7 +7,24 @@
 
 .content {
     flex: 1; /* Allow the left content to expand and take available space */
+    width: 100%; /* Ensure the content div takes up the full width */
   }
+
+  .contentcols {
+    width: 80%; /* Ensure the content div takes up the full width */
+    margin-bottom: 10px;
+  }
+
+  .containercols {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center;
+  gap: 32px;
+}
+
+.spacing {
+  margin-bottom: 10px;
+}
 
 .title {
     font-family: Inter;
@@ -51,4 +68,11 @@
     margin-left: 280px;
     margin-top: 24px;
     text-align: left;
+  }
+
+  .flex-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
   }
