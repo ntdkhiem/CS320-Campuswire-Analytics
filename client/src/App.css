@@ -1,4 +1,15 @@
+.sidebar-wrapper {
+  flex: 0 0 195px;
+  min-width: 195px;
+  height: 100vh;
+  border-right: 1px solid #dadddf;
+}
+
+.content-wrapper {
+  margin-left: 3.7rem;
+}
+
 h5 {
-  padding: 1rem 0 0 1rem;
+  padding: 2.3rem 0 0 1rem;
   font-weight: 649;
 }

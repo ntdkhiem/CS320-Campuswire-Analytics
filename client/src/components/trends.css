@@ -1,0 +1,25 @@
+.posts {
+    margin: 0 12px 0 12px;
+}
+
+.no-border {
+    border: none;
+}
+
+.post-border {
+    border-bottom: 1px solid #e0e0e0; /* Adjust the color and style as needed */
+}
+
+.interact button {
+    border: none;
+    background-color: transparent;
+}
+
+.interact button:hover {
+    -webkit-text-stroke: 0.3px;
+}
+
+.count {
+    font-size: 12px;
+    font-style: normal;
+}
