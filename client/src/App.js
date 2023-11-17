@@ -5,6 +5,7 @@ import Sidebar from "./components/sidebar";
 import NavBar from "./components/navbar";
 import Summary from "./components/summary";
 import Trends from "./components/trends";
+import Contributors from "./components/contributors";
 
 function App() {
   const [activeItem, setActiveItem] = useState(0); // Initialize the active item
@@ -25,6 +26,7 @@ function App() {
             <NavBar activeItem={activeItem} handleNavItemClick={handleNavItemClick} />
             {activeItem === 0 && <Summary />}
             {activeItem === 1 && <Trends />}
+            {activeItem === 2 && <Contributors />}
           </div>
         </div>
       </div>
