@@ -2,7 +2,6 @@ import React from "react";
 import "./navbar.css";
 
 const NavBar = (props) => {
-  console.log(props.activeItem);
   const items = ["Summary", "Trends", "Contributors", "Statistics"];
 
   return (
@@ -12,13 +11,13 @@ const NavBar = (props) => {
           <ul className="navbar-nav">
             {items.map((item, id) => (
               <li className="nav-item">
-                <a
+                <button
                   className={`nav-link ${props.activeItem === id ? "active" : ""}`}
                   href="#"
                   onClick={() => props.handleNavItemClick(id)}
                 >
                   {item}
-                </a>
+                </button>
                 {id === props.activeItem && <div className="active-line"></div>}
               </li>
             ))}
