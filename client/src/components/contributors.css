@@ -1,0 +1,62 @@
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 16px;
+   }
+   .contributors-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px; /* Adjust the gap between cards as needed */
+  }
+   
+   .card {
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    padding: 16px;
+    width: 300px;
+   }
+   
+   .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+   }
+   
+   .avatar {
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+   }
+   
+   .status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+   }
+   
+   .dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+   }
+   
+   .green {
+    background-color: #28a745;
+   }
+   
+   .red {
+    background-color: #dc3545;
+   }
+   
+   .yellow {
+    background-color: #ffc107;
+   }
+   
+   .expand {
+    cursor: pointer;
+    user-select: none;
+    color: #007bff;
+    font-weight: bold;
+   }
