@@ -9,6 +9,8 @@ const Summary = () => {
         height: '100px', // Adjust the height as needed
         margin: '70px 140px', // Adjust the margins as needed
         borderRadius: '10px', // Adjust the radius as needed
+        position:'relative',
+        right:'50px'
       };
     return(
         <div>
@@ -20,7 +22,7 @@ const Summary = () => {
                 </div>
                 <div className={`content`}>
                     <p className={`instructors`}>
-                        Instructor: Matthew Rattigan (you) <br/>
+                        Instructor: Matthew Rattigan<br/>
                         TA: John Doe<br/>
                         UCA: Jane Doe
                     </p>

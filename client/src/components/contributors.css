@@ -12,12 +12,17 @@
   }
    
    .card {
-    background-color: #f0f0f0;
+    background-color: #ffffff;
     border-radius: 8px;
     padding: 16px;
     width: 300px;
+    transition: background-color 0.1s ease;
    }
    
+   .card:hover {
+    background-color: #f0f0f0;
+   }
+
    .header {
     display: flex;
     justify-content: space-between;
@@ -37,8 +42,8 @@
    }
    
    .dot {
-    width: 16px;
-    height: 16px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
    }
    

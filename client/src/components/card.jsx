@@ -9,14 +9,15 @@ function Card(props) {
       <div className="header">
         <img className="avatar" src={avatarSrc} alt="Avatar" />
         <div className="status">
-          <div className={`dot ${status === 'Active' ? 'green' : 'red'}`}></div>
-          <p style={{ fontWeight: 'bold', position: 'relative', top: '8px' }}>{status}</p>
+          <div className={`dot ${status === 'Active' ? 'green' : 'red'}`} style={{position:'absolute', right:'235px', top:'50px'}}></div>
         </div>
       </div>
-      <p>{username}</p>
-      <p>{`${postsCreated} posts created`}</p>
-      <p>{`${questionsAnswered} questions answered`}</p>
-      <p>{`${endorsedComments} endorsed comments`}</p>
+      <p style={{position:'relative', top:'5px', fontWeight:'bold', fontFamily:'Segoe UI'}} >{username}</p>
+      <ul style={{fontFamily:'Segoe UI'}}>
+      <li>{`${postsCreated} posts created`}</li>
+      <li>{`${questionsAnswered} questions answered`}</li>
+      <li>{`${endorsedComments} endorsed comments`}</li>
+      </ul>
     </div>
   );
 }
