@@ -3,48 +3,22 @@ import morgan from "morgan";
 import cors from "cors";
 
 const client = new MongoClient(process.env.connectionID); //need to import
-const db = client.db('CampusWire');
+const db = client.db('campuswire');
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 app.use(cors());
 app.use(morgan("dev"))
 app.use(express.json());
 
-app.get('/', async(req, res) => {
-  res.send('hi')
-})
-
-app.get('/totalUnreadPosts', async(req, res) => { //gets ttl num of unread posts
-  let collection = await db.collection("dailyStats");
-  let result = await collection.aggregate([
-      {
-        $group: {
-          _id: null,
-          totalUnreadPosts: { $sum: "$numUnreadPosts" }
-        }
-      }
-    ]).toArray();
-  let data = {totalUnreadPosts: result[0]}
-  res.json(data);
-});
-
-app.get('/numUnreadPosts/:date', async(req, res) => { //gets ttl num of unread posts for the day
-  let date = req.params.date;
-  let collection = await db.collection("dailyStats");
-  let result = await collection.findOne({date: date})
-  let data = {numUnreadPosts: result.numUnreadPosts}
-  res.json(data);
-})
-
 app.get('/totalUnansweredQuestions', async(req, res) => { //gets ttl num of unanswered questions
-  let collection = await db.collection("dailyStats");
+  let collection = await db.collection("numUnansweredQuestions");
   let result = await collection.aggregate([
       {
         $group: {
           _id: null,
-          totalUnreadPosts: { $sum: "$totalUnansweredQuestions" }
+          totalUnreadPosts: { $sum: "$number_of_unanswered_posts" }
         }
       }
     ]).toArray();
@@ -54,19 +28,19 @@ app.get('/totalUnansweredQuestions', async(req, res) => { //gets ttl num of unan
 
 app.get('/numUnansweredQuestions/:date', async(req, res) => { //gets ttl num of unanswered questions for the day
   let date = req.params.date;
-  let collection = await db.collection("dailyStats");
+  let collection = await db.collection("numUnansweredQuestions");
   let result = await collection.findOne({date: date})
-  let data = {numUnansweredQuestions: result.numUnansweredQuestions}
+  let data = {numUnansweredQuestions: result.number_of_unanswered_posts}
   res.json(data);
 })
 
 app.get('/numPosts', async(req, res) => { //gets ttl num of posts
-  let collection = await db.collection("dailyStats");
+  let collection = await db.collection("numPostsForDay");
   let result = await collection.aggregate([
       {
         $group: {
           _id: null,
-          totalUnreadPosts: { $sum: "$numPosts" }
+          totalUnreadPosts: { $sum: "$number_of_posts" }
         }
       }
     ]).toArray();
@@ -77,19 +51,19 @@ app.get('/numPosts', async(req, res) => { //gets ttl num of posts
 
 app.get('/numPosts/:date', async(req, res) => { //gets ttl num of posts for the day
   let date = req.params.date;
-  let collection = await db.collection("dailyStats");
+  let collection = await db.collection("numPostsForDay");
   let result = await collection.findOne({date: date})
-  let data = {numPosts: result.numPosts}
+  let data = {numPosts: result.number_of_posts}
   res.json(data);
 })
 
 app.get('/numComments', async(req, res) => { //gets ttl num of comments
-  let collection = await db.collection("dailyStats");
+  let collection = await db.collection("numCommentsForDay");
   let result = await collection.aggregate([
       {
         $group: {
           _id: null,
-          totalUnreadPosts: { $sum: "$numComments" }
+          totalUnreadPosts: { $sum: "$number_of_comments" }
         }
       }
     ]).toArray();
@@ -99,19 +73,19 @@ app.get('/numComments', async(req, res) => { //gets ttl num of comments
 
 app.get('/numComments/:date', async(req, res) => { //gets ttl num of comments for the day
   let date = req.params.date;
-  let collection = await db.collection("dailyStats");
+  let collection = await db.collection("numCommentsForDay");
   let result = await collection.findOne({date: date})
-  let data = {numComments: result.numComments}
-  res.json(data);
+  let data = {numComments: result.number_of_comments}
+  res.json(data); //{date: [], count: []}
 })
 
 app.get('/avgResponseTime', async(req, res) => { //gets avg response time
-  let collection = await db.collection("dailyStats");
+  let collection = await db.collection("avgResponseTimeForDay");
   let result = await collection.aggregate([
       {
         $group: {
           _id: null,
-          totalUnreadPosts: { $sum: "$avgResponseTime" }
+          totalUnreadPosts: { $sum: "$average_response_time_seconds" }
         }
       }
     ]).toArray();
@@ -121,9 +95,9 @@ app.get('/avgResponseTime', async(req, res) => { //gets avg response time
 
 app.get('/avgResponseTime/:date', async(req, res) => { //gets avg response time
   let date = req.params.date;
-  let collection = await db.collection("dailyStats");
+  let collection = await db.collection("avgResponseTimeForDay");
   let result = await collection.findOne({date: date})
-  let data = {avgResponseTime: result.avgResponseTime}
+  let data = {avgResponseTime: result.average_response_time_seconds}
   res.json(data);
 })
 
@@ -135,6 +109,28 @@ app.get('/top3/:rank', async(req, res) => { //gets top 3 posts title, body, like
   let data = {title: post.title, body: post.body, likes: post.likes, comments: post.comments, uniqueViews: post.uniqueViews, views: post.views}
   res.json(data)
 })
+
+// app.get('/totalUnreadPosts', async(req, res) => { //gets ttl num of unread posts
+//   let collection = await db.collection("dailyStats");
+//   let result = await collection.aggregate([
+//       {
+//         $group: {
+//           _id: null,
+//           totalUnreadPosts: { $sum: "$numUnreadPosts" }
+//         }
+//       }
+//     ]).toArray();
+//   let data = {totalUnreadPosts: result[0]}
+//   res.json(data);
+// });
+
+// app.get('/numUnreadPosts/:date', async(req, res) => { //gets ttl num of unread posts for the day
+//   let date = req.params.date;
+//   let collection = await db.collection("dailyStats");
+//   let result = await collection.findOne({date: date})
+//   let data = {numUnreadPosts: result.numUnreadPosts}
+//   res.json(data);
+// })
 
 // app.get('/numInstructorResponses', async(req, res) => { //gets ttl num of instructor responses
 //   res.send('rrt')
