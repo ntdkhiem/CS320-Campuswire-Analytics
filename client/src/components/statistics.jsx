@@ -9,7 +9,7 @@ const Statistics = (props) => {
     setActiveTab(item);
   };
 
-  const users_data = [
+  const users_data = [ 
     { date: "2023-11-21", count: 23 },
     { date: "2023-11-22", count: 84 },
     { date: "2023-11-23", count: 52 },

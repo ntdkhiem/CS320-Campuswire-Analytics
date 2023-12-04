@@ -1,37 +1,43 @@
 import React from "react";
 import "./trends.css";
 
+const resFirst = await fetch('http://localhost:3001/top3/first')
+const first = await resTotalPost.json();
+
+const resSecond = await fetch('http://localhost:3001/top3/second')
+const second = await resTotalPost.json();
+
+const resThird = await fetch('http://localhost:3001/top3/third')
+const third = await resTotalPost.json();
+
 const Trends = (props) => {
-  const posts = [
+const posts = [
     {
-      id: 12,
-      title: "[IMPORTANT] Midterm 2 Exam Information",
-      content:
-        "Hi everyone,\nAs you all know, Midterm 2 will be on Wednesday, October 25 from 7-9pm. It will cover bipartite testing (somewhere in Lecture 6), topological orders/sorting, greedy algorithms, Dijkstra, Kruskal/Prim, and the first two lectures of divide and conquer (so the lectures covered this week). It will be a similar format to the first exam.",
-      likes: 69,
-      comments: 25,
-      post_views: 420,
-      user_views: 96,
+      id: first.id,
+      title: first.title,
+      content: first.body,
+      likes: first.likes,
+      comments: first.comments,
+      post_views: first.views,
+      user_views: first.uniqueViews,
     },
     {
-      id: 12,
-      title: "[IMPORTANT] Midterm 2 Exam Information",
-      content:
-        "Hi everyone,\nAs you all know, Midterm 2 will be on Wednesday, October 25 from 7-9pm. It will cover bipartite testing (somewhere in Lecture 6), topological orders/sorting, greedy algorithms, Dijkstra, Kruskal/Prim, and the first two lectures of divide and conquer (so the lectures covered this week). It will be a similar format to the first exam.",
-      likes: 69,
-      comments: 25,
-      post_views: 420,
-      user_views: 96,
+      id: second.id,
+      title: second.title,
+      content: second.body,
+      likes: second.likes,
+      comments: second.comments,
+      post_views: second.views,
+      user_views: second.uniqueViews,
     },
     {
-      id: 12,
-      title: "[IMPORTANT] Midterm 2 Exam Information",
-      content:
-        "Hi everyone,\nAs you all know, Midterm 2 will be on Wednesday, October 25 from 7-9pm. It will cover bipartite testing (somewhere in Lecture 6), topological orders/sorting, greedy algorithms, Dijkstra, Kruskal/Prim, and the first two lectures of divide and conquer (so the lectures covered this week). It will be a similar format to the first exam.",
-      likes: 69,
-      comments: 25,
-      post_views: 420,
-      user_views: 96,
+      id: third.id,
+      title: third.title,
+      content: third.body,
+      likes: third.likes,
+      comments: third.comments,
+      post_views: third.views,
+      user_views: third.uniqueViews,
     },
   ];
 

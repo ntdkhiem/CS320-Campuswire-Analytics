@@ -1,9 +1,19 @@
 import React from "react";
 import './summary.css'
 
+const resTotalPost = await fetch('http://localhost:3001/numPosts')
+const totalPost = await resTotalPost.json();
+
+const resAvgTime = await fetch('http://localhost:3001/avgResponseTime')
+const avgTime = await resAvgTime.json();
+
+const resUnansweredQuestions = await fetch('http://localhost:3001/totalUnansweredQuestions')
+const unansweredQuestionsObj = await resUnansweredQuestions.json();
+const unansweredQuestions = unansweredQuestionsObj.totalUnansweredQuestions
+
 const Summary = () => {
 
-    const warnings = ['420 Unread posts', '96 Unanswered questions', '40 Unanswered followups'];
+    const warnings = ['420 Unread posts', unansweredQuestions.toString() + ' Unanswered questions', '40 Unanswered followups'];
     const boxStyle = {
         backgroundColor: 'lightblue',
         height: '100px', // Adjust the height as needed
@@ -38,11 +48,11 @@ const Summary = () => {
                 </div>
                 <div className={`content`}>
                     <p className={`class-summary`}>
-                    191 total posts<br/>
+                    {totalPost.numPosts} total posts<br/>
                     575 total contributions<br/>
                     153 instructors' responses<br/>
                     23 students' responses<br/>
-                    9 min avg. response time
+                    {avgTime.avgResponseTime} min avg. response time
                     </p>
                 </div>
 
