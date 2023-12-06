@@ -2,18 +2,24 @@ import React from "react";
 import './summary.css'
 
 const resTotalPost = await fetch('http://localhost:3001/numPosts')
-const totalPost = await resTotalPost.json();
+const totalPostObj = await resTotalPost.json();
+const totalPost = totalPostObj.total
 
 const resAvgTime = await fetch('http://localhost:3001/avgResponseTime')
-const avgTime = await resAvgTime.json();
+const avgTimeObj = await resAvgTime.json();
+const avgTime = avgTimeObj.avg
 
-const resUnansweredQuestions = await fetch('http://localhost:3001/totalUnansweredQuestions')
-const unansweredQuestionsObj = await resUnansweredQuestions.json();
-const unansweredQuestions = unansweredQuestionsObj.totalUnansweredQuestions
+// const resUnansweredQuestions = await fetch('http://localhost:3001/totalUnansweredQuestions')
+// const unansweredQuestionsObj = await resUnansweredQuestions.json();
+// const unansweredQuestions = unansweredQuestionsObj.total unansweredQuestions.toString()
+
+// const resUnansweredFollowups = await fetch('http://localhost:3001/totalUnansweredFollowups')
+// const UnansweredFollowupsObj = await resUnansweredFollowups.json();
+// const UnansweredFollowups = UnansweredFollowupsObj.total UnansweredFollowups.toString()
 
 const Summary = () => {
 
-    const warnings = ['420 Unread posts', unansweredQuestions.toString() + ' Unanswered questions', '40 Unanswered followups'];
+    const warnings = ['420 Unread posts', '2 Unanswered questions', '40 Unanswered followups'];
     const boxStyle = {
         backgroundColor: 'lightblue',
         height: '100px', // Adjust the height as needed
@@ -48,11 +54,11 @@ const Summary = () => {
                 </div>
                 <div className={`content`}>
                     <p className={`class-summary`}>
-                    {totalPost.numPosts} total posts<br/>
+                    {totalPost} total posts<br/>
                     575 total contributions<br/>
                     153 instructors' responses<br/>
                     23 students' responses<br/>
-                    {avgTime.avgResponseTime} min avg. response time
+                    {avgTime} min avg. response time
                     </p>
                 </div>
 

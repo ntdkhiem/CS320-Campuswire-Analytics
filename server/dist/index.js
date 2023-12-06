@@ -15,138 +15,218 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
-// const client = new MongoClient(process.env.connectionID); //need to import
-// const db = client.db('CampusWire');
+const mongodb_1 = require("mongodb");
+const client = new mongodb_1.MongoClient("mongodb+srv://cargill0523:NgBOply50frqpJfS@cluster0.zq7qnts.mongodb.net/");
+const db = client.db("campuswire");
 const app = (0, express_1.default)();
 const port = 3001;
 app.use((0, cors_1.default)());
 app.use((0, morgan_1.default)("dev"));
 app.use(express_1.default.json());
-app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send('hi');
+function connectToDatabase() {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield client.connect();
+    });
+}
+// Call the connectToDatabase function
+connectToDatabase();
+app.get("/numUniqueUsers", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // gets ttl num of unanswered questions
+    const collection = yield db.collection("numUniqueUsers");
+    const result = yield collection
+        .aggregate([
+        {
+            $group: {
+                _id: null,
+                total: { $sum: "$number_of_unique_users" },
+            },
+        },
+    ])
+        .toArray();
+    const data = { total: result[0] };
+    res.json(data);
 }));
-app.get('/totalUnreadPosts', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // let collection = await db.collection("dailyStats");
-    // let result = await collection.aggregate([
-    //     {
-    //       $group: {
-    //         _id: null,
-    //         totalUnreadPosts: { $sum: "$numUnreadPosts" }
-    //       }
-    //     }
-    //   ]).toArray();
-    res.send(300);
+app.get("/numUniqueUsersTrends", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const collection = yield db.collection("numUniqueUsers");
+    const result = yield collection.aggregate([
+        {
+            $project: {
+                _id: null,
+                date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+                count: "$number_of_unique_users"
+            }
+        }
+    ]);
+    const documents = yield result.toArray();
+    res.json(documents);
 }));
-// app.get('/numUnreadPosts/:date', async(req, res) => { //gets ttl num of unread posts for the day
-//   let date = req.params.date;
-//   let collection = await db.collection("dailyStats");
-//   let result = await collection.findOne({date: date})
-//   let data = {numUnreadPosts: result.numUnreadPosts}
-//   res.json(data);
-// })
-// app.get('/totalUnansweredQuestions', async(req, res) => { //gets ttl num of unanswered questions
-//   let collection = await db.collection("dailyStats");
-//   let result = await collection.aggregate([
-//       {
-//         $group: {
-//           _id: null,
-//           totalUnreadPosts: { $sum: "$totalUnansweredQuestions" }
-//         }
-//       }
-//     ]).toArray();
-//   let data = {totalUnansweredQuestions: result[0]}
-//   res.json(data);
-// });
-// app.get('/numUnansweredQuestions/:date', async(req, res) => { //gets ttl num of unanswered questions for the day
-//   let date = req.params.date;
-//   let collection = await db.collection("dailyStats");
-//   let result = await collection.findOne({date: date})
-//   let data = {numUnansweredQuestions: result.numUnansweredQuestions}
-//   res.json(data);
-// })
-// app.get('/numPosts', async(req, res) => { //gets ttl num of posts
-//   let collection = await db.collection("dailyStats");
-//   let result = await collection.aggregate([
-//       {
-//         $group: {
-//           _id: null,
-//           totalUnreadPosts: { $sum: "$numPosts" }
-//         }
-//       }
-//     ]).toArray();
-//   let data = {numPosts: result[0]}
-//   //res.json(data);
-//   res.json({numPosts: 300})
-// });
-// app.get('/numPosts/:date', async(req, res) => { //gets ttl num of posts for the day
-//   let date = req.params.date;
-//   let collection = await db.collection("dailyStats");
-//   let result = await collection.findOne({date: date})
-//   let data = {numPosts: result.numPosts}
-//   res.json(data);
-// })
-// app.get('/numComments', async(req, res) => { //gets ttl num of comments
-//   let collection = await db.collection("dailyStats");
-//   let result = await collection.aggregate([
-//       {
-//         $group: {
-//           _id: null,
-//           totalUnreadPosts: { $sum: "$numComments" }
-//         }
-//       }
-//     ]).toArray();
-//   let data = {numComments: result[0]}
-//   res.json(data);
-// });
-// app.get('/numComments/:date', async(req, res) => { //gets ttl num of comments for the day
-//   let date = req.params.date;
-//   let collection = await db.collection("dailyStats");
-//   let result = await collection.findOne({date: date})
-//   let data = {numComments: result.numComments}
-//   res.json(data);
-// })
-// app.get('/avgResponseTime', async(req, res) => { //gets avg response time
-//   let collection = await db.collection("dailyStats");
-//   let result = await collection.aggregate([
-//       {
-//         $group: {
-//           _id: null,
-//           totalUnreadPosts: { $sum: "$avgResponseTime" }
-//         }
-//       }
-//     ]).toArray();
-//   let data = {avgResponseTime: result[0]}
-//   res.json(data);
-// });
-// app.get('/avgResponseTime/:date', async(req, res) => { //gets avg response time
-//   let date = req.params.date;
-//   let collection = await db.collection("dailyStats");
-//   let result = await collection.findOne({date: date})
-//   let data = {avgResponseTime: result.avgResponseTime}
-//   res.json(data);
-// })
-// app.get('/top3/:rank', async(req, res) => { //gets top 3 posts title, body, likes, comments, views, multiple views
-//   let rank = req.params.rank
-//   let collection = await db.collection("top3");
-//   let result = await collection.findOne({rank: rank})
-//   let post = result.post
-//   let data = {title: post.title, body: post.body, likes: post.likes, comments: post.comments, uniqueViews: post.uniqueViews, views: post.views}
-//   res.json(data)
-// })
-// app.get('/numInstructorResponses', async(req, res) => { //gets ttl num of instructor responses
-//   res.send('rrt')
-// })
-// app.get('/numInstructorResponses/:date', async(req, res) => { //gets ttl num of instructor responses for the day
-//   res.send('rrt')
-//   const date = req.params.date;
-// })
-// app.get('/numStudentResponses', async(req, res) => { //gets ttl num of student responses
-//   res.send('rrt')
-// })
-// app.get('/numStudentResponses/:date', async(req, res) => { //gets ttl num of student responses
-//   res.send('rrt')
-//   const date = req.params.date;
-// })
+app.get("/numUnansweredFollowups", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // gets ttl num of unanswered questions
+    const collection = yield db.collection("numUnansweredFollowups");
+    const result = yield collection
+        .aggregate([
+        {
+            $group: {
+                _id: null,
+                total: { $sum: "$number_of_unanswered_followups" },
+            },
+        },
+    ])
+        .toArray();
+    const data = { total: result[0] };
+    res.json(data);
+}));
+app.get("/numUnansweredFollowupsTrends", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const collection = yield db.collection("numUnansweredFollowups");
+    const result = yield collection.aggregate([
+        {
+            $project: {
+                _id: null,
+                date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+                count: "$number_of_unanswered_followups"
+            }
+        }
+    ]);
+    const documents = yield result.toArray();
+    res.json(documents);
+}));
+app.get("/numUnansweredQuestions", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // gets ttl num of unanswered questions
+    const collection = yield db.collection("numUnansweredQuestions");
+    const result = yield collection
+        .aggregate([
+        {
+            $group: {
+                _id: null,
+                total: { $sum: "$number_of_unanswered_posts" },
+            },
+        },
+    ])
+        .toArray();
+    const data = { total: result[0] };
+    res.json(data);
+}));
+app.get("/numUnansweredQuestionsTrends", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const collection = yield db.collection("numUnansweredQuestions");
+    const result = yield collection.aggregate([
+        {
+            $project: {
+                _id: null,
+                date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+                count: "$number_of_unanswered_posts"
+            }
+        }
+    ]);
+    const documents = yield result.toArray();
+    res.json(documents);
+}));
+app.get("/numPosts", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // gets ttl num of posts
+    const collection = yield db.collection("numPostsForDay");
+    const result = yield collection
+        .aggregate([
+        {
+            $group: {
+                _id: null,
+                total: { $sum: "$number_of_posts" },
+            },
+        },
+    ])
+        .toArray();
+    const data = { total: result[0] };
+    // res.json(data);
+    res.json(data);
+}));
+app.get("/numPostsTrends", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const collection = yield db.collection("numPostsForDay");
+    const result = yield collection.aggregate([
+        {
+            $project: {
+                _id: null,
+                date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+                count: "$number_of_posts"
+            }
+        }
+    ]);
+    const documents = yield result.toArray();
+    res.json(documents);
+}));
+app.get("/numComments", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // gets ttl num of comments
+    const collection = yield db.collection("numCommentsForDay");
+    const result = yield collection
+        .aggregate([
+        {
+            $group: {
+                _id: null,
+                total: { $sum: "$number_of_comments" },
+            },
+        },
+    ])
+        .toArray();
+    res.json(result[0]);
+}));
+app.get("/numCommentsTrends", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const collection = yield db.collection("numCommentsForDay");
+    const result = yield collection.aggregate([
+        {
+            $project: {
+                _id: null,
+                date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+                count: "$number_of_comments"
+            }
+        }
+    ]);
+    const documents = yield result.toArray();
+    res.json(documents);
+}));
+app.get("/avgResponseTime", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // gets avg response time
+    const collection = yield db.collection("avgResponseTimeForDay");
+    const result = yield collection
+        .aggregate([
+        {
+            $group: {
+                _id: null,
+                avg: { $sum: "$average_response_time_seconds" },
+            },
+        },
+    ])
+        .toArray();
+    res.json(result[0]);
+}));
+app.get("/avgResponseTimeTrends", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const collection = yield db.collection("avgResponseTimeForDay");
+    const result = yield collection.aggregate([
+        {
+            $project: {
+                _id: null,
+                date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+                count: "$average_response_time_seconds"
+            }
+        }
+    ]);
+    const documents = yield result.toArray();
+    res.json(documents);
+}));
+app.get("/top3/:rank", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // gets top 3 posts title, body, likes, comments, views, multiple views
+    const rank = req.params.rank;
+    const collection = yield db.collection("top3Ranked");
+    const result = yield collection.findOne({ rank });
+    // tslint:disable-next-line:no-console
+    console.log(result);
+    const post = result.post;
+    const data = {
+        title: post.title,
+        body: post.body,
+        likes: post.likes,
+        comments: post.comments,
+        uniqueViews: post.uniqueViews,
+        views: post.views,
+    };
+    res.json(data);
+}));
 app.listen(port, () => {
     // tslint:disable-next-line:no-console
     console.log(`server started at http://localhost:${port}`);

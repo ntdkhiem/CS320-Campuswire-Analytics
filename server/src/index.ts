@@ -16,129 +16,219 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 async function connectToDatabase() {
-  try {
-    await client.connect();
-    console.log("Connected to MongoDB");
-  } catch (error) {
-    console.error("Error connecting to MongoDB:", error);
-  }
+  await client.connect();
 }
 
 // Call the connectToDatabase function
 connectToDatabase();
 
-app.get("/totalUnansweredQuestions", async (req, res) => {
-  //gets ttl num of unanswered questions
-  let collection = await db.collection("numUnansweredQuestions");
-  let result = await collection
+app.get("/numUniqueUsers", async (req, res) => {
+  // gets ttl num of unanswered questions
+  const collection = await db.collection("numUniqueUsers");
+  const result = await collection
     .aggregate([
       {
         $group: {
           _id: null,
-          totalUnreadPosts: { $sum: "$number_of_unanswered_posts" },
+          total: { $sum: "$number_of_unique_users" },
         },
       },
     ])
     .toArray();
-  let data = { totalUnansweredQuestions: result[0] };
-  res.json(data);
+  res.json(result[0]);
 });
 
-app.get("/numUnansweredQuestions/:date", async (req, res) => {
-  //gets ttl num of unanswered questions for the day
-  let date = req.params.date;
-  let collection = await db.collection("numUnansweredQuestions");
-  let result = await collection.findOne({ date: date });
-  let data = { numUnansweredQuestions: result.number_of_unanswered_posts };
-  res.json(data);
+app.get("/numUniqueUsersTrends", async (req, res) => {
+  const collection = await db.collection("numUniqueUsers");
+  const result = await collection.aggregate(
+    [
+      {
+        $project: {
+          _id: null,
+           date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+           count: "$number_of_unique_users"
+        }
+      }
+    ]
+ )
+ const documents = await result.toArray();
+  res.json(documents);
+});
+
+app.get("/numUnansweredFollowups", async (req, res) => {
+  // gets ttl num of unanswered questions
+  const collection = await db.collection("numUnansweredFollowups");
+  const result = await collection
+    .aggregate([
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$number_of_unanswered_followups" },
+        },
+      },
+    ])
+    .toArray();
+  res.json(result[0]);
+});
+
+app.get("/numUnansweredFollowupsTrends", async (req, res) => {
+  const collection = await db.collection("numUnansweredFollowups");
+  const result = await collection.aggregate(
+    [
+      {
+        $project: {
+          _id: null,
+           date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+           count: "$number_of_unanswered_followups"
+        }
+      }
+    ]
+ )
+ const documents = await result.toArray();
+  res.json(documents);
+});
+
+app.get("/numUnansweredQuestions", async (req, res) => {
+  // gets ttl num of unanswered questions
+  const collection = await db.collection("numUnansweredQuestions");
+  const result = await collection
+    .aggregate([
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$number_of_unanswered_posts" },
+        },
+      },
+    ])
+    .toArray();
+  res.json(result[0]);
+});
+
+app.get("/numUnansweredQuestionsTrends", async (req, res) => {
+  const collection = await db.collection("numUnansweredQuestions");
+  const result = await collection.aggregate(
+    [
+      {
+        $project: {
+          _id: null,
+           date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+           count: "$number_of_unanswered_posts"
+        }
+      }
+    ]
+ )
+ const documents = await result.toArray();
+  res.json(documents);
 });
 
 app.get("/numPosts", async (req, res) => {
-  //gets ttl num of posts
-  let collection = await db.collection("numPostsForDay");
-  let result = await collection
+  // gets ttl num of posts
+  const collection = await db.collection("numPostsForDay");
+  const result = await collection
     .aggregate([
       {
         $group: {
           _id: null,
-          totalUnreadPosts: { $sum: "$number_of_posts" },
+          total: { $sum: "$number_of_posts" },
         },
       },
     ])
     .toArray();
-  let data = { numPosts: result[0] };
-  //res.json(data);
-  res.json({ numPosts: 300 });
+  res.json(result[0]);
 });
 
-app.get("/numPosts/:date", async (req, res) => {
-  //gets ttl num of posts for the day
-  let date = req.params.date;
-  let collection = await db.collection("numPostsForDay");
-  let result = await collection.findOne({ date: date });
-  let data = { numPosts: result.number_of_posts };
-  res.json(data);
+app.get("/numPostsTrends", async (req, res) => {
+  const collection = await db.collection("numPostsForDay");
+  const result = await collection.aggregate(
+    [
+      {
+        $project: {
+          _id: null,
+           date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+           count: "$number_of_posts"
+        }
+      }
+    ]
+ )
+ const documents = await result.toArray();
+  res.json(documents);
 });
 
 app.get("/numComments", async (req, res) => {
-  //gets ttl num of comments
-  let collection = await db.collection("numCommentsForDay");
-  let result = await collection
+  // gets ttl num of comments
+  const collection = await db.collection("numCommentsForDay");
+  const result = await collection
     .aggregate([
       {
         $group: {
           _id: null,
-          totalUnreadPosts: { $sum: "$number_of_comments" },
+          total: { $sum: "$number_of_comments" },
         },
       },
     ])
     .toArray();
-  let data = { numComments: result[0] };
-  res.json(data);
+  res.json(result[0]);
 });
 
-app.get("/numComments/:date", async (req, res) => {
-  //gets ttl num of comments for the day
-  let date = req.params.date;
-  let collection = await db.collection("numCommentsForDay");
-  let result = await collection.findOne({ date: date });
-  let data = { numComments: result.number_of_comments };
-  res.json(data); //{date: [], count: []}
+app.get("/numCommentsTrends", async (req, res) => {
+  const collection = await db.collection("numCommentsForDay");
+  const result = await collection.aggregate(
+    [
+      {
+        $project: {
+          _id: null,
+           date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+           count: "$number_of_comments"
+        }
+      }
+    ]
+ )
+ const documents = await result.toArray();
+  res.json(documents);
 });
 
 app.get("/avgResponseTime", async (req, res) => {
-  //gets avg response time
-  let collection = await db.collection("avgResponseTimeForDay");
-  let result = await collection
+  // gets avg response time
+  const collection = await db.collection("avgResponseTimeForDay");
+  const result = await collection
     .aggregate([
       {
         $group: {
           _id: null,
-          totalUnreadPosts: { $sum: "$average_response_time_seconds" },
+          avg: { $sum: "$average_response_time_seconds" },
         },
       },
     ])
     .toArray();
-  let data = { avgResponseTime: result[0] };
-  res.json(data);
+  res.json(result[0]);
 });
 
-app.get("/avgResponseTime/:date", async (req, res) => {
-  //gets avg response time
-  let date = req.params.date;
-  let collection = await db.collection("avgResponseTimeForDay");
-  let result = await collection.findOne({ date: date });
-  let data = { avgResponseTime: result.average_response_time_seconds };
-  res.json(data);
+app.get("/avgResponseTimeTrends", async (req, res) => {
+  const collection = await db.collection("avgResponseTimeForDay");
+  const result = await collection.aggregate(
+    [
+      {
+        $project: {
+          _id: null,
+           date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+           count: "$average_response_time_seconds"
+        }
+      }
+    ]
+ )
+ const documents = await result.toArray();
+  res.json(documents);
 });
 
 app.get("/top3/:rank", async (req, res) => {
-  //gets top 3 posts title, body, likes, comments, views, multiple views
-  let rank = req.params.rank;
-  let collection = await db.collection("top3");
-  let result = await collection.findOne({ rank: rank });
-  let post = result.post;
-  let data = {
+  // gets top 3 posts title, body, likes, comments, views, multiple views
+  const rank = req.params.rank;
+  const collection = await db.collection("top3Ranked");
+  const result = await collection.findOne({ rank });
+  // tslint:disable-next-line:no-console
+  console.log(result);
+  const post = result.post;
+  const data = {
     title: post.title,
     body: post.body,
     likes: post.likes,
@@ -148,46 +238,6 @@ app.get("/top3/:rank", async (req, res) => {
   };
   res.json(data);
 });
-
-// app.get('/totalUnreadPosts', async(req, res) => { //gets ttl num of unread posts
-//   let collection = await db.collection("dailyStats");
-//   let result = await collection.aggregate([
-//       {
-//         $group: {
-//           _id: null,
-//           totalUnreadPosts: { $sum: "$numUnreadPosts" }
-//         }
-//       }
-//     ]).toArray();
-//   let data = {totalUnreadPosts: result[0]}
-//   res.json(data);
-// });
-
-// app.get('/numUnreadPosts/:date', async(req, res) => { //gets ttl num of unread posts for the day
-//   let date = req.params.date;
-//   let collection = await db.collection("dailyStats");
-//   let result = await collection.findOne({date: date})
-//   let data = {numUnreadPosts: result.numUnreadPosts}
-//   res.json(data);
-// })
-
-// app.get('/numInstructorResponses', async(req, res) => { //gets ttl num of instructor responses
-//   res.send('rrt')
-// })
-
-// app.get('/numInstructorResponses/:date', async(req, res) => { //gets ttl num of instructor responses for the day
-//   res.send('rrt')
-//   const date = req.params.date;
-// })
-
-// app.get('/numStudentResponses', async(req, res) => { //gets ttl num of student responses
-//   res.send('rrt')
-// })
-
-// app.get('/numStudentResponses/:date', async(req, res) => { //gets ttl num of student responses
-//   res.send('rrt')
-//   const date = req.params.date;
-// })
 
 app.listen(port, () => {
   // tslint:disable-next-line:no-console

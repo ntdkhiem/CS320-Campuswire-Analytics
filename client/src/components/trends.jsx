@@ -2,13 +2,13 @@ import React from "react";
 import "./trends.css";
 
 const resFirst = await fetch('http://localhost:3001/top3/first')
-const first = await resTotalPost.json();
+const first = await resFirst.json();
 
 const resSecond = await fetch('http://localhost:3001/top3/second')
-const second = await resTotalPost.json();
+const second = await resSecond.json();
 
 const resThird = await fetch('http://localhost:3001/top3/third')
-const third = await resTotalPost.json();
+const third = await resThird.json();
 
 const Trends = (props) => {
 const posts = [
