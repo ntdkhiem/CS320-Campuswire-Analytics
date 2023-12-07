@@ -32,7 +32,7 @@ function connectToDatabase() {
 connectToDatabase();
 app.get("/numUniqueUsers", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // gets ttl num of unanswered questions
-    const collection = yield db.collection("numUniqueUsers");
+    const collection = yield db.collection("numUsersForDay");
     const result = yield collection
         .aggregate([
         {
@@ -46,7 +46,7 @@ app.get("/numUniqueUsers", (req, res) => __awaiter(void 0, void 0, void 0, funct
     res.json(result[0]);
 }));
 app.get("/numUniqueUsersTrends", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const collection = yield db.collection("numUniqueUsers");
+    const collection = yield db.collection("numUsersForDay");
     const result = yield collection.aggregate([
         {
             $project: {
@@ -61,7 +61,7 @@ app.get("/numUniqueUsersTrends", (req, res) => __awaiter(void 0, void 0, void 0,
 }));
 app.get("/numUnansweredFollowups", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // gets ttl num of unanswered questions
-    const collection = yield db.collection("numUnansweredFollowups");
+    const collection = yield db.collection("numUnansweredFollowupsForDay");
     const result = yield collection
         .aggregate([
         {
@@ -75,7 +75,7 @@ app.get("/numUnansweredFollowups", (req, res) => __awaiter(void 0, void 0, void 
     res.json(result[0]);
 }));
 app.get("/numUnansweredFollowupsTrends", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const collection = yield db.collection("numUnansweredFollowups");
+    const collection = yield db.collection("numUnansweredFollowupsForDay");
     const result = yield collection.aggregate([
         {
             $project: {
@@ -90,13 +90,13 @@ app.get("/numUnansweredFollowupsTrends", (req, res) => __awaiter(void 0, void 0,
 }));
 app.get("/numUnansweredQuestions", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // gets ttl num of unanswered questions
-    const collection = yield db.collection("numUnansweredQuestions");
+    const collection = yield db.collection("numUnansweredQuestionsForDay");
     const result = yield collection
         .aggregate([
         {
             $group: {
                 _id: null,
-                total: { $sum: "$number_of_unanswered_posts" },
+                total: { $sum: "$number_of_unanswered_questions" },
             },
         },
     ])
@@ -104,13 +104,13 @@ app.get("/numUnansweredQuestions", (req, res) => __awaiter(void 0, void 0, void 
     res.json(result[0]);
 }));
 app.get("/numUnansweredQuestionsTrends", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const collection = yield db.collection("numUnansweredQuestions");
+    const collection = yield db.collection("numUnansweredQuestionsForDay");
     const result = yield collection.aggregate([
         {
             $project: {
                 _id: null,
                 date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
-                count: "$number_of_unanswered_posts"
+                count: "$number_of_unanswered_questions"
             }
         }
     ]);
@@ -183,11 +183,13 @@ app.get("/avgResponseTime", (req, res) => __awaiter(void 0, void 0, void 0, func
         {
             $group: {
                 _id: null,
-                avg: { $sum: "$average_response_time_seconds" },
+                avg: { $avg: "$average_response_time_seconds" },
             },
         },
     ])
         .toArray();
+    result[0].avg /= 3600;
+    result[0].avg = result[0].avg.toFixed(1);
     res.json(result[0]);
 }));
 app.get("/avgResponseTimeTrends", (req, res) => __awaiter(void 0, void 0, void 0, function* () {

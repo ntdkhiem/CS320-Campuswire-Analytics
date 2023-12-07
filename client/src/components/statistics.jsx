@@ -11,6 +11,12 @@ const resComment = await resCommentTrend.json();
 // const resPostTrend = await fetch('http://localhost:3001/numPostsTrends')
 // const resPost = await resPostTrend.json();
 
+// const resUnansweredQuestionsTrend = await fetch('http://localhost:3001/numUnansweredQuestionsTrends')
+// const resUnansweredQuestions = await resUnansweredQuestionsTrend.json();
+
+// const resUnansweredFollowupsTrend = await fetch('http://localhost:3001/numUnansweredFollowupsTrends')
+// const resUnansweredFollowups = await resUnansweredFollowupsTrend.json();
+
 const Statistics = (props) => {
   const [activeTab, setActiveTab] = useState(0); // Initialize the active item  
 
@@ -37,6 +43,9 @@ const Statistics = (props) => {
     { date: "2023-12-07", count: 44 },
     { date: "2023-12-08", count: 76 },
   ];
+  const comments_data = resComment
+  const unansweredQuestions_data = resComment
+  const UnansweredFollowups_data = resComment
 
   return (
     <div>
@@ -53,6 +62,27 @@ const Statistics = (props) => {
           label="Posts per day"
           date={posts_data.map((endpoint) => endpoint.date)}
           count={posts_data.map((endpoint) => endpoint.count)}
+        />
+      )}
+      {activeTab === 2 && (
+        <LineChart
+          label="Comments per day"
+          date={comments_data.map((endpoint) => endpoint.date)}
+          count={comments_data.map((endpoint) => endpoint.count)}
+        />
+      )}
+      {activeTab === 3 && (
+        <LineChart
+          label="Unanswered Questions per day"
+          date={unansweredQuestions_data.map((endpoint) => endpoint.date)}
+          count={unansweredQuestions_data.map((endpoint) => endpoint.count)}
+        />
+      )}
+      {activeTab === 4 && (
+        <LineChart
+          label="Unanswered Followups per day"
+          date={UnansweredFollowups_data.map((endpoint) => endpoint.date)}
+          count={UnansweredFollowups_data.map((endpoint) => endpoint.count)}
         />
       )}
     </div>

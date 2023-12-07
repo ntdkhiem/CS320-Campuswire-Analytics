@@ -24,7 +24,7 @@ connectToDatabase();
 
 app.get("/numUniqueUsers", async (req, res) => {
   // gets ttl num of unanswered questions
-  const collection = await db.collection("numUniqueUsers");
+  const collection = await db.collection("numUsersForDay");
   const result = await collection
     .aggregate([
       {
@@ -39,7 +39,7 @@ app.get("/numUniqueUsers", async (req, res) => {
 });
 
 app.get("/numUniqueUsersTrends", async (req, res) => {
-  const collection = await db.collection("numUniqueUsers");
+  const collection = await db.collection("numUsersForDay");
   const result = await collection.aggregate(
     [
       {
@@ -57,7 +57,7 @@ app.get("/numUniqueUsersTrends", async (req, res) => {
 
 app.get("/numUnansweredFollowups", async (req, res) => {
   // gets ttl num of unanswered questions
-  const collection = await db.collection("numUnansweredFollowups");
+  const collection = await db.collection("numUnansweredFollowupsForDay");
   const result = await collection
     .aggregate([
       {
@@ -72,7 +72,7 @@ app.get("/numUnansweredFollowups", async (req, res) => {
 });
 
 app.get("/numUnansweredFollowupsTrends", async (req, res) => {
-  const collection = await db.collection("numUnansweredFollowups");
+  const collection = await db.collection("numUnansweredFollowupsForDay");
   const result = await collection.aggregate(
     [
       {
@@ -90,13 +90,13 @@ app.get("/numUnansweredFollowupsTrends", async (req, res) => {
 
 app.get("/numUnansweredQuestions", async (req, res) => {
   // gets ttl num of unanswered questions
-  const collection = await db.collection("numUnansweredQuestions");
+  const collection = await db.collection("numUnansweredQuestionsForDay");
   const result = await collection
     .aggregate([
       {
         $group: {
           _id: null,
-          total: { $sum: "$number_of_unanswered_posts" },
+          total: { $sum: "$number_of_unanswered_questions" },
         },
       },
     ])
@@ -105,14 +105,14 @@ app.get("/numUnansweredQuestions", async (req, res) => {
 });
 
 app.get("/numUnansweredQuestionsTrends", async (req, res) => {
-  const collection = await db.collection("numUnansweredQuestions");
+  const collection = await db.collection("numUnansweredQuestionsForDay");
   const result = await collection.aggregate(
     [
       {
         $project: {
           _id: null,
            date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
-           count: "$number_of_unanswered_posts"
+           count: "$number_of_unanswered_questions"
         }
       }
     ]
@@ -195,11 +195,13 @@ app.get("/avgResponseTime", async (req, res) => {
       {
         $group: {
           _id: null,
-          avg: { $sum: "$average_response_time_seconds" },
+          avg: { $avg: "$average_response_time_seconds" },
         },
       },
     ])
     .toArray();
+  result[0].avg /= 3600
+  result[0].avg = result[0].avg.toFixed(1)
   res.json(result[0]);
 });
 

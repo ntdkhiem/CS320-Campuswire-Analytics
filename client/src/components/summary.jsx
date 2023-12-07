@@ -62,7 +62,7 @@ const Summary = () => {
             <br />
             23 students' responses
             <br />
-            {avgTime} min avg. response time
+            {avgTime} hour avg. response time
           </p>
         </div>
       </div>

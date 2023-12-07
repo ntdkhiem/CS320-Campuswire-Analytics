@@ -21,6 +21,33 @@ const NavTabs = (props) => {
           Posts per day
         </button>
       </li>
+      <li class="nav-item">
+        <button
+          class={`nav-link ${props.activeTab === 2 ? "active" : ""}`}
+          href="#"
+          onClick={() => props.handleNavTabClick(2)}
+        >
+          Comments per day
+        </button>
+      </li>
+      <li class="nav-item">
+        <button
+          class={`nav-link ${props.activeTab === 3 ? "active" : ""}`}
+          href="#"
+          onClick={() => props.handleNavTabClick(3)}
+        >
+          Unanswered Questions per day
+        </button>
+      </li>
+      <li class="nav-item">
+        <button
+          class={`nav-link ${props.activeTab === 4 ? "active" : ""}`}
+          href="#"
+          onClick={() => props.handleNavTabClick(4)}
+        >
+          Unanswered Followups per day
+        </button>
+      </li>
     </ul>
   );
 };
