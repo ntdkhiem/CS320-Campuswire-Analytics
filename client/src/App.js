@@ -22,7 +22,7 @@ function App() {
           <div className="sidebar-wrapper col-1">
             <Sidebar />
           </div>
-          <div className="content-wrapper col">
+          <div className="content-wrapper col-9">
             <h5>Dashboard</h5>
             <NavBar activeItem={activeItem} handleNavItemClick={handleNavItemClick} />
             {activeItem === 0 && <Summary />}
