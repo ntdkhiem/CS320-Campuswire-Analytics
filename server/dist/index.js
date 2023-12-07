@@ -43,8 +43,7 @@ app.get("/numUniqueUsers", (req, res) => __awaiter(void 0, void 0, void 0, funct
         },
     ])
         .toArray();
-    const data = { total: result[0] };
-    res.json(data);
+    res.json(result[0]);
 }));
 app.get("/numUniqueUsersTrends", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const collection = yield db.collection("numUniqueUsers");
@@ -73,8 +72,7 @@ app.get("/numUnansweredFollowups", (req, res) => __awaiter(void 0, void 0, void 
         },
     ])
         .toArray();
-    const data = { total: result[0] };
-    res.json(data);
+    res.json(result[0]);
 }));
 app.get("/numUnansweredFollowupsTrends", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const collection = yield db.collection("numUnansweredFollowups");
@@ -103,8 +101,7 @@ app.get("/numUnansweredQuestions", (req, res) => __awaiter(void 0, void 0, void 
         },
     ])
         .toArray();
-    const data = { total: result[0] };
-    res.json(data);
+    res.json(result[0]);
 }));
 app.get("/numUnansweredQuestionsTrends", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const collection = yield db.collection("numUnansweredQuestions");
@@ -133,9 +130,7 @@ app.get("/numPosts", (req, res) => __awaiter(void 0, void 0, void 0, function* (
         },
     ])
         .toArray();
-    const data = { total: result[0] };
-    // res.json(data);
-    res.json(data);
+    res.json(result[0]);
 }));
 app.get("/numPostsTrends", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const collection = yield db.collection("numPostsForDay");
