@@ -9,6 +9,8 @@ Database: Connor, Joel<br></br></div>
 Many instructors provide online-forum-based support for their courses. For large classes, things can get unwieldy: lots of students, lots of posts, lots of people monitoring the forums at once.<br>
 The goal of this project is to provide a dashboard for instructors or course staff to get a "forum weather report" (traffic level, unanswered questions, participation levels from students and staff, etc.)<br></br>
 
+[You can access the project repository here](https://github.com/ntdkhiem/CS320-Campuswire-Analytics)
+
 Desiderata:
 - Current state of the forum assessments (e.g., traffic rates, number of unanswered posts, current response times)
 - Participation reporting indicating engagement levels for staff members (forum visits, posts answered, etc.)
