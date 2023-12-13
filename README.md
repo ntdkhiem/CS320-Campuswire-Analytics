@@ -25,3 +25,14 @@ Running the Front End:
 - Run the command `npm install` to install all the required dependencies
 - Once everything is installed, run the command `npm start` and the server should start on your machine (Usually on port 3000)
 - Make sure the server is running and you should be all set to browse the website
+
+
+Running the Back End:
+- Must have Node.js installed 
+- Clone the project into a local directory on your computer
+- Open your terminal and navigate to the directory with the project
+- Now, switch to the server folder with `cd server`
+- Run the command `npm install` to install all the required dependencies
+- Once everything is installed, run the command `npm start` and the server should start on your machine on port 3001
+
+
