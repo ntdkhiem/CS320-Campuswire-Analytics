@@ -14,3 +14,12 @@ Desiderata:
 - Participation reporting indicating engagement levels for staff members (forum visits, posts answered, etc.)
 - Student engagement reporting indicating how many students are posting or commenting, which students are most active, etc.
 - Reporting on trending topics or categories found in posts or comments
+
+
+Running the Front End:
+- Clone the project into a local directory on your computer
+- Open your terminal and navigate to the directory with the project
+- Now, switch to the client folder with `cd client`
+- Run the command `npm install` to install all the required dependencies
+- Once everything is installed, run the command `npm start` and the server should start on your machine (Usually on port 3000)
+- Make sure the server is running and you should be all set to browse the website
