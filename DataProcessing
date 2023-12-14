@@ -1,15 +1,28 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import numpy as np
 from collections import defaultdict
+import pymongo 
+from pymongo import MongoClient
+
+
+cluster = MongoClient("mongodb+srv://MichaelR:Erj1P2pOUUo4yF65@cluster0.zq7qnts.mongodb.net/")
+db = cluster["campuswire"]
+
+
+#this will be the list of collections we will be using
+postsPerDayCollection = db["numPostsForDay"]
+responseTimePerDay = db["avgResponseTimeForDay"]
+numOfCommentsPerDay = db["numCommentsForDay"]
+numOfUnansweredPostsPerDay = db["numUnansweredQuestions"]
+numTop3Posts = db["top3Ranked"]
+numUsersForDay = db["numUsersForDay"]
+
 
 with open("/Users/mikeroncevich/Desktop/project.json") as file:
     data = json.load(file)
 
 #we are not going to find different data types in the json file and parse the data we need 
-
-print(data[2]['viewsCount'])
-
 #Here we will be summing the viewcounts per day in a new list, then we will sort this in ascending order for the traffic rates per day
 
 # Step 2: Extract Dates and View Counts
@@ -23,49 +36,84 @@ for post in data:
 # Step 3: Sort the Results
 sorted_daily_views = sorted(daily_views.items())
 
-# Step 4: Analyze the Data
-for date, views in sorted_daily_views:
-    print(f'{date}: {views} views')
+# #here is the sorted list of traffic times
+# sorted_daily_views = sorted(daily_views.items(), key=lambda x: x[1])
+# #print(sorted_daily_views)
+# # Step 2: Format and Insert Data
+# for date, views in sorted_daily_views:
+#     # Convert date to a string or another format if MongoDB doesn't accept datetime objects directly
+#     formatted_date = date.strftime('%Y-%m-%d')
+#     data_to_insert = {"date": formatted_date, "views": views}
+#     numPostCollection.insert_one(data_to_insert)
 
-#here is the sorted list of traffic times
-sorted_daily_views = sorted(daily_views.items(), key=lambda x: x[1])
-#print(sorted_daily_views)
-
-
+#print("Data inserted into MongoDB.")
 #now we are going to do the recent response times for the posts 
 # Initialize a list to store the response times and post IDs.
-response_times = []
+# response_times = []
 
-# Loop through each post in your data.
+# # Loop through each post in your data.
+# for post in data:
+#     # Convert post creation time to datetime object
+#     post_created_at = datetime.strptime(post["createdAt"], '%Y-%m-%dT%H:%M:%S.%fZ')
+    
+#     # Initialize the first response time to None
+#     first_response_time = None
+    
+#     # Check if there are comments (responses) for the post
+#     if "comments" in post and post["comments"]:
+#         # Sort comments by creation time
+#         sorted_comments = sorted(post["comments"], key=lambda x: x["createdAt"])
+        
+#         # Convert the first comment's creation time to datetime object
+#         first_response_time = datetime.strptime(sorted_comments[0]["createdAt"], '%Y-%m-%dT%H:%M:%S.%fZ')
+    
+#     # Calculate the response time if there is a response
+#     if first_response_time:
+#         response_time = first_response_time - post_created_at
+#         response_times.append((post["id"], response_time))
+#     else:
+#         response_times.append((post["id"], None))
+
+# # Sort the list based on response times in ascending order.
+# # Posts without responses (None) will be placed at the end of the list.
+# response_times.sort(key=lambda x: (x[1] is None, x[1]))
+
+# # Print the sorted list
+# for post_id, response_time in response_times:
+#     print(f"Post ID: {post_id}, Response Time: {response_time}")
+
+# Initialize a defaultdict to accumulate response times for each day
+daily_response_times = defaultdict(list)
+
+# Loop through each post in your data
 for post in data:
-    # Convert post creation time to datetime object
-    post_created_at = datetime.strptime(post["createdAt"], '%Y-%m-%dT%H:%M:%S.%fZ')
+    post_created_at = datetime.strptime(post["createdAt"], '%Y-%m-%dT%H:%M:%S.%fZ').date()
     
     # Initialize the first response time to None
     first_response_time = None
     
     # Check if there are comments (responses) for the post
     if "comments" in post and post["comments"]:
-        # Sort comments by creation time
         sorted_comments = sorted(post["comments"], key=lambda x: x["createdAt"])
-        
-        # Convert the first comment's creation time to datetime object
         first_response_time = datetime.strptime(sorted_comments[0]["createdAt"], '%Y-%m-%dT%H:%M:%S.%fZ')
     
-    # Calculate the response time if there is a response
+    # Calculate and accumulate the response time
     if first_response_time:
-        response_time = first_response_time - post_created_at
-        response_times.append((post["id"], response_time))
-    else:
-        response_times.append((post["id"], None))
+        response_time = first_response_time - datetime.combine(post_created_at, datetime.min.time())
+        daily_response_times[post_created_at].append(response_time.total_seconds())
 
-# Sort the list based on response times in ascending order.
-# Posts without responses (None) will be placed at the end of the list.
-response_times.sort(key=lambda x: (x[1] is None, x[1]))
+# Calculate the average response time for each day
+average_response_time_per_day = {date: sum(times) / len(times) for date, times in daily_response_times.items()}
 
-# Print the sorted list
-for post_id, response_time in response_times:
-    print(f"Post ID: {post_id}, Response Time: {response_time}")
+
+#here we are going to insert the average response times per day into the database
+# for date, avg_time in average_response_time_per_day.items():
+#     datetime_object = datetime.combine(date,datetime.min.time())
+#     data_to_insert = {"date": datetime_object, "average_response_time_seconds": avg_time}
+#     responseTimePerDay.insert_one(data_to_insert)
+
+# print("Average response times per day inserted into MongoDB.")
+
 
 
 #now we will figure out the number of unanswered posts overall and per day
@@ -109,3 +157,127 @@ for date, count in unanswered_posts_sorted.items():
 
 # Print the total number of unanswered posts
 print(f"Total Unanswered Posts: {total_unanswered_posts}")
+
+
+#now we will insert the number of unanswered posts per day into the database
+# Insert the counts into MongoDB
+for date, count in unanswered_posts.items():
+    datetime_object = datetime.combine(date, datetime.min.time())
+    data_to_insert = {"date": datetime_object, "number_of_unanswered_posts": count}
+    numOfUnansweredPostsPerDay.insert_one(data_to_insert)
+
+print("Number of unanswered posts per day inserted into MongoDB.")
+
+
+#now we will find the amount of comments per day 
+#initialize a defaultdict to store the count of comments per day.
+comments_per_day = defaultdict(int)
+
+# Loop through each post in your data.
+for post in data:
+    # Convert post creation time to datetime object
+    post_date = datetime.strptime(post["createdAt"], '%Y-%m-%dT%H:%M:%S.%fZ').date()
+
+    # Increment the count of comments for that day
+    comments_per_day[post_date] += len(post.get("comments", []))
+
+# Sort the dictionary by date
+sorted_comments_per_day = dict(sorted(comments_per_day.items()))
+
+# Print the number of comments per day
+for date, count in sorted_comments_per_day.items():
+    print(f"Date: {date}, Number of Comments: {count}")
+
+
+#we are going to find the number of comments per day
+# Initialize a defaultdict to accumulate the count of comments per day
+comments_count_per_day = defaultdict(int)
+
+# Loop through each post and its comments
+for post in data:
+    post_date = datetime.strptime(post["createdAt"], '%Y-%m-%dT%H:%M:%S.%fZ').date()
+
+    # Increment the count for each comment
+    comments_count_per_day[post_date] += len(post.get("comments", []))
+
+# Insert the counts into MongoDB
+# for date, count in comments_count_per_day.items():
+#     datetime_object = datetime.combine(date, datetime.min.time())
+#     data_to_insert = {"date": datetime_object, "number_of_comments": count}
+#     numOfCommentsPerDay.insert_one(data_to_insert)
+
+# print("Number of comments per day inserted into MongoDB.")
+
+
+post_scores = []
+for post in data:
+    num_comments = len(post.get("comments", []))
+    num_likes = post.get("likesCount", 0)  # Assuming likesCount is the field for likes
+    score = (num_comments * 2) + num_likes
+    post_scores.append((post, score))
+
+# Sort posts by their scores and select the top 3
+top_3_posts = sorted(post_scores, key=lambda x: x[1], reverse=True)[:3]
+
+# Prepare documents for MongoDB insertion
+rank_titles = ["first", "second", "third"]
+mongo_documents = []
+for i, (post, score) in enumerate(top_3_posts):
+    mongo_doc = {
+        "rank": rank_titles[i],
+        "post": {
+            "title": post["title"],
+            "body": post["body"],
+            "likes": post.get("likesCount", 0),
+            "comments": len(post.get("comments", [])),
+            "uniqueViews": post.get("uniqueViewsCount", 0),
+            "views": post.get("viewsCount", 0)
+        }
+    }
+    mongo_documents.append(mongo_doc)
+
+# Insert the documents into MongoDB
+#numTop3Posts.insert_many(mongo_documents)
+
+print("Top 3 posts inserted into MongoDB.")
+
+posts_count_per_day = defaultdict(int)
+
+# Loop through each post in your data
+for post in data:
+    # Assuming each post has a 'createdAt' field
+    post_date = datetime.strptime(post["createdAt"], '%Y-%m-%dT%H:%M:%S.%fZ').date()
+    posts_count_per_day[post_date] += 1
+
+# Insert the counts into MongoDB
+for date, count in posts_count_per_day.items():
+    datetime_object = datetime.combine(date, datetime.min.time())
+    #data_to_insert = {"date": datetime_object, "number_of_posts": count}
+    #postsPerDayCollection.insert_one(data_to_insert)
+
+
+#here we are going to find the amojnt of unique users per day
+# Initialize a defaultdict to store the sum of unique views per day
+unique_views_per_day = defaultdict(int)
+
+# Loop through each post in your data
+for post in data:
+    post_date = datetime.strptime(post["createdAt"], '%Y-%m-%dT%H:%M:%S.%fZ').date()
+    unique_views = post.get("uniqueViewsCount", 0)
+
+    # Add the unique views count to the total for that day
+    unique_views_per_day[post_date] += unique_views
+
+
+# Insert each day's count directly into MongoDB
+for date, unique_views in unique_views_per_day.items():
+    data_to_insert = {
+        "date": datetime.combine(date, datetime.min.time()), 
+        "estimated_unique_users": unique_views
+    }
+    numUsersForDay.insert_one(data_to_insert)
+
+
+
+print("Estimated number of unique users per day inserted into MongoDB.")
+
