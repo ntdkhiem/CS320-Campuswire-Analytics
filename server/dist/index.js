@@ -38,7 +38,7 @@ app.get("/numUniqueUsers", (req, res) => __awaiter(void 0, void 0, void 0, funct
         {
             $group: {
                 _id: null,
-                total: { $sum: "$number_of_unique_users" },
+                total: { $sum: "$estimated_unique_users" },
             },
         },
     ])
@@ -52,36 +52,7 @@ app.get("/numUniqueUsersTrends", (req, res) => __awaiter(void 0, void 0, void 0,
             $project: {
                 _id: null,
                 date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
-                count: "$number_of_unique_users"
-            }
-        }
-    ]);
-    const documents = yield result.toArray();
-    res.json(documents);
-}));
-app.get("/numUnansweredFollowups", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // gets ttl num of unanswered questions
-    const collection = yield db.collection("numUnansweredFollowupsForDay");
-    const result = yield collection
-        .aggregate([
-        {
-            $group: {
-                _id: null,
-                total: { $sum: "$number_of_unanswered_followups" },
-            },
-        },
-    ])
-        .toArray();
-    res.json(result[0]);
-}));
-app.get("/numUnansweredFollowupsTrends", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const collection = yield db.collection("numUnansweredFollowupsForDay");
-    const result = yield collection.aggregate([
-        {
-            $project: {
-                _id: null,
-                date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
-                count: "$number_of_unanswered_followups"
+                count: "$estimated_unique_users"
             }
         }
     ]);
@@ -96,7 +67,7 @@ app.get("/numUnansweredQuestions", (req, res) => __awaiter(void 0, void 0, void 
         {
             $group: {
                 _id: null,
-                total: { $sum: "$number_of_unanswered_questions" },
+                total: { $sum: "$number_of_unanswered_posts" },
             },
         },
     ])
@@ -110,7 +81,7 @@ app.get("/numUnansweredQuestionsTrends", (req, res) => __awaiter(void 0, void 0,
             $project: {
                 _id: null,
                 date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
-                count: "$number_of_unanswered_questions"
+                count: "$number_of_unanswered_posts"
             }
         }
     ]);

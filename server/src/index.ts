@@ -30,7 +30,7 @@ app.get("/numUniqueUsers", async (req, res) => {
       {
         $group: {
           _id: null,
-          total: { $sum: "$number_of_unique_users" },
+          total: { $sum: "$estimated_unique_users" },
         },
       },
     ])
@@ -46,40 +46,7 @@ app.get("/numUniqueUsersTrends", async (req, res) => {
         $project: {
           _id: null,
            date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
-           count: "$number_of_unique_users"
-        }
-      }
-    ]
- )
- const documents = await result.toArray();
-  res.json(documents);
-});
-
-app.get("/numUnansweredFollowups", async (req, res) => {
-  // gets ttl num of unanswered questions
-  const collection = await db.collection("numUnansweredFollowupsForDay");
-  const result = await collection
-    .aggregate([
-      {
-        $group: {
-          _id: null,
-          total: { $sum: "$number_of_unanswered_followups" },
-        },
-      },
-    ])
-    .toArray();
-  res.json(result[0]);
-});
-
-app.get("/numUnansweredFollowupsTrends", async (req, res) => {
-  const collection = await db.collection("numUnansweredFollowupsForDay");
-  const result = await collection.aggregate(
-    [
-      {
-        $project: {
-          _id: null,
-           date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
-           count: "$number_of_unanswered_followups"
+           count: "$estimated_unique_users"
         }
       }
     ]
@@ -96,7 +63,7 @@ app.get("/numUnansweredQuestions", async (req, res) => {
       {
         $group: {
           _id: null,
-          total: { $sum: "$number_of_unanswered_questions" },
+          total: { $sum: "$number_of_unanswered_posts" },
         },
       },
     ])
@@ -112,7 +79,7 @@ app.get("/numUnansweredQuestionsTrends", async (req, res) => {
         $project: {
           _id: null,
            date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
-           count: "$number_of_unanswered_questions"
+           count: "$number_of_unanswered_posts"
         }
       }
     ]

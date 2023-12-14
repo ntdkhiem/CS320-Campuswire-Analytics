@@ -1,24 +1,20 @@
 import React from "react";
 import "./summary.css";
 
-// const resTotalPost = await fetch('http://localhost:3001/numPosts')
-// const totalPostObj = await resTotalPost.json();
-// const totalPost = totalPostObj.total;
+const resTotalPost = await fetch('http://localhost:3001/numPosts')
+const totalPostObj = await resTotalPost.json();
+const totalPost = totalPostObj.total;
 
 const resAvgTime = await fetch("http://localhost:3001/avgResponseTime");
 const avgTimeObj = await resAvgTime.json();
 const avgTime = avgTimeObj.avg;
 
-// const resUnansweredQuestions = await fetch('http://localhost:3001/totalUnansweredQuestions')
-// const unansweredQuestionsObj = await resUnansweredQuestions.json();
-// const unansweredQuestions = unansweredQuestionsObj.total unansweredQuestions.toString()
-
-// const resUnansweredFollowups = await fetch('http://localhost:3001/totalUnansweredFollowups')
-// const UnansweredFollowupsObj = await resUnansweredFollowups.json();
-// const UnansweredFollowups = UnansweredFollowupsObj.total UnansweredFollowups.toString()
+const resUnansweredQuestions = await fetch('http://localhost:3001/numUnansweredQuestions')
+const unansweredQuestionsObj = await resUnansweredQuestions.json();
+const unansweredQuestions = unansweredQuestionsObj.total 
 
 const Summary = () => {
-  const warnings = ["420 Unread posts", "2 Unanswered questions", "40 Unanswered followups"];
+  const warnings = [unansweredQuestions + " Unanswered questions"];
   const boxStyle = {
     backgroundColor: "lightblue",
     height: "100px", // Adjust the height as needed
@@ -54,7 +50,7 @@ const Summary = () => {
         </div>
         <div className={`content`}>
           <p className={`class-summary`}>
-            {/* {totalPost} total posts */}
+            {totalPost} total posts
             <br />
             575 total contributions
             <br />
