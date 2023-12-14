@@ -45,14 +45,14 @@ app.get("/numUniqueUsers", (req, res) => __awaiter(void 0, void 0, void 0, funct
         .toArray();
     res.json(result[0]);
 }));
-app.get("/numUniqueUsersTrends", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const collection = yield db.collection("numUsersForDay");
+app.get("/numViewsTrends", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const collection = yield db.collection("numViewsForDay");
     const result = yield collection.aggregate([
         {
             $project: {
                 _id: null,
                 date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
-                count: "$estimated_unique_users"
+                count: "$views"
             }
         }
     ]);

@@ -39,6 +39,15 @@ const NavTabs = (props) => {
           Unanswered Questions per day
         </button>
       </li>
+      <li class="nav-item">
+        <button
+          class={`nav-link ${props.activeTab === 4 ? "active" : ""}`}
+          href="#"
+          onClick={() => props.handleNavTabClick(4)}
+        >
+          Views per day
+        </button>
+      </li>
     </ul>
   );
 };

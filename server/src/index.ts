@@ -38,15 +38,15 @@ app.get("/numUniqueUsers", async (req, res) => {
   res.json(result[0]);
 });
 
-app.get("/numUniqueUsersTrends", async (req, res) => {
-  const collection = await db.collection("numUsersForDay");
+app.get("/numViewsTrends", async (req, res) => {
+  const collection = await db.collection("numViewsForDay");
   const result = await collection.aggregate(
     [
       {
         $project: {
           _id: null,
            date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
-           count: "$estimated_unique_users"
+           count: "$views"
         }
       }
     ]
